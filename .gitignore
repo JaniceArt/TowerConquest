@@ -35,3 +35,20 @@ sysinfo.txt
 crashlytics-build.properties
 Assets/AddressableAssetsData/*/*.bin*
 Assets/AddressableAssetsData/*/*SharedBudget.bin
+
+# --- Office temporary lock files ---
+~$*.docx
+~$*.xlsx
+~$*.pptx
+
+# --- Python cache ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# --- OS & Editor files ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

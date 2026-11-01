@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>Food Clash: Mold Invasion – Prototype GDD v2.0</title>
+  <meta name="description" content="Prototype playable của Food Clash: Mold Invasion – Đồ ăn chiến đấu chống Nấm Mốc, xuất quân từ Nhà chính, thả phép tự do.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Be+Vietnam+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header id="hud">
+      <div class="side player">
+        <span class="tag">❄️ ĐỒ ĂN TƯƠI</span>
+        <span id="crownP" class="crowns"></span>
+      </div>
+      <div class="center">
+        <div id="timer">2:00</div>
+        <div id="phase">Năng lượng x1</div>
+      </div>
+      <div class="side bot">
+        <span id="crownB" class="crowns"></span>
+        <span class="tag">🦠 NẤM MỐC <small id="botLevel"></small></span>
+        <span id="botEnergy" class="bot-energy"></span>
+      </div>
+      <nav class="controls">
+        <button id="btnPause" title="Tạm dừng (Space)">⏸</button>
+        <button id="btnSpeed" title="Tốc độ mô phỏng">x1</button>
+        <button id="btnDebug" class="on" title="Lớp debug GDD (D)">📐</button>
+        <button id="btnRestart" title="Về menu">↺</button>
+      </nav>
+    </header>
+
+    <canvas id="minimap" title="Bấm để di chuyển camera"></canvas>
+
+    <main id="stage">
+      <canvas id="game"></canvas>
+      <div id="banner"></div>
+    </main>
+
+    <footer id="dock">
+      <div id="next">
+        <span>Tiếp theo</span>
+        <div id="nextCard"></div>
+      </div>
+      <div id="handWrap">
+        <div id="hand"></div>
+        <div id="energy">
+          <div id="energyIcon">💧</div>
+          <div id="energyBar">
+            <div id="energyFill"></div>
+            <div id="energyPreview"></div>
+            <div id="energyTicks"></div>
+          </div>
+          <div id="energyNum">5</div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div id="dragGhost"></div>
+
+  <!-- MENU -->
+  <section id="menu" class="overlay">
+    <div class="panel">
+      <h1>🍫 Food Clash <span>MOLD INVASION · GDD v2.0</span></h1>
+      <p class="sub">Đồ ăn tươi ngon xuất kích từ Tủ Lạnh Tổng chống lại Đế chế Nấm Mốc!</p>
+
+      <div class="levels" id="levels">
+        <button data-ch="1">Chương 1 · Quầy Bếp Ẩm</button>
+        <button data-ch="2" class="active">Chương 2 · Tủ Bánh Mì</button>
+        <button data-ch="3">Chương 3 · Vua Mốc (Boss)</button>
+      </div>
+
+      <div class="deck-builder">
+        <div class="deck-header">
+          <span>Chọn bộ bài ra trận (<b id="deckCount">6</b>/6 lá):</span>
+          <span>
+            <label for="cardLvSelect">Cấp độ thẻ (Lv1–16): </label>
+            <select id="cardLvSelect" style="background:#1c2e24;color:#ffd36e;border:1px solid #4ca96c;border-radius:6px;padding:2px 6px;font-weight:700;"></select>
+            &nbsp;·&nbsp;<span id="avgCost">💧 TB: 3.3</span>
+          </span>
+        </div>
+        <div id="deckGrid" class="deck-grid"></div>
+      </div>
+
+      <button id="btnStart" class="primary">⚔️ BẮT ĐẦU CHIẾN ĐẤU</button>
+
+      <details>
+        <summary>Luật chơi cập nhật (GDD v2.0)</summary>
+        <ul>
+          <li><b>Thẻ Nhân vật (Đồ ăn):</b> Chạm trực tiếp vào thẻ (hoặc kéo lên sân rồi thả) để xuất quân từ <b>Cổng Tủ Lạnh Tổng (x = 1250)</b>.</li>
+          <li><b>Thẻ Phép (Muối Hột, Bom Giấm):</b> Kéo thả tự do vào ô 100 đv trên sân, có hiển thị vùng AoE nhấp nháy các đơn vị địch bị ảnh hưởng.</li>
+          <li><b>Vùng trung hòa 1000 đv (3000 → 4000):</b> Khoảng không gian nằm ngoài tầm bắn của cả 2 Trụ bậc thềm (1200 đv).</li>
+          <li><b>Công trình:</b> Lính đất &amp; lính bay bắt buộc phá <b>Trụ bậc thềm</b> trước khi đánh Nhà chính. Nhà chính <b>ngủ</b> cho đến khi nhận sát thương hoặc mất Trụ bậc thềm.</li>
+          <li><b>8 Nhân vật từ Propose:</b> El Valentino (chỉ đánh trụ), Sir Tom (nổ AoE khi chết), Lemo-nade (ném chanh AoE), Milky Cartoneey, Avocador, Boba Bob, Chips (x3), Dough Donuts (x2 bay).</li>
+        </ul>
+      </details>
+      <div id="cardTable"></div>
+    </div>
+  </section>
+
+  <!-- KẾT QUẢ -->
+  <section id="result" class="overlay hidden">
+    <div class="panel">
+      <h2 id="resTitle">CHIẾN THẮNG!</h2>
+      <div id="resStars" class="stars"></div>
+      <p id="resReason"></p>
+      <div id="resScore"></div>
+      <div id="resStats"></div>
+      <div class="row">
+        <button id="btnAgain" class="primary">Chơi lại</button>
+        <button id="btnMenu">Đổi bộ bài / Chương</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="config.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
